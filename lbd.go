@@ -1,4 +1,4 @@
-package lambda
+package main
 
 import (
 	"encoding/base64"
@@ -11,6 +11,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
 )
+
+func main() {}
 
 func InvokeAuthorizer(functionName string, awsRegion string, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (*events.APIGatewayCustomAuthorizerResponse, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{

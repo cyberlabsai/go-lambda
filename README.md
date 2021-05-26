@@ -15,7 +15,7 @@ func main() {
 		},
 		HTTPMethod: "GET",
 	}
-	userDataResponse, err := lbd.InvokeFunction("gopher-function", "gopher-planet", dataRequest)
+	userDataResponse, err := lbd.Invoke("gopher-function", "gopher-planet", dataRequest)
 }
 ```
 Authorizer
