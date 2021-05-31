@@ -1,4 +1,4 @@
-package main
+package lbd
 
 import (
 	"encoding/base64"
@@ -12,9 +12,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/lambda"
 )
 
-func main() {}
+type Client struct{}
 
-func InvokeAuthorizer(functionName string, awsRegion string, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (*events.APIGatewayCustomAuthorizerResponse, error) {
+func (Client) InvokeAuthorizer(functionName string, awsRegion string, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (*events.APIGatewayCustomAuthorizerResponse, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
@@ -49,7 +49,7 @@ func InvokeAuthorizer(functionName string, awsRegion string, request events.APIG
 	return &resp, nil
 }
 
-func Invoke(functionName string, awsRegion string, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+func (Client) Invoke(functionName string, awsRegion string, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
