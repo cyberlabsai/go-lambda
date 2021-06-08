@@ -14,23 +14,33 @@ import (
 
 type Client struct{}
 
-func (Client) InvokeAuthorizer(functionName string, awsRegion string, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (*events.APIGatewayCustomAuthorizerResponse, error) {
+var internatlClient = Client{}
+
+func (Client) SimpleInvoke(functionName string, awsRegion string, payload []byte) (*lambda.InvokeOutput, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 	client := lambda.New(sess, &aws.Config{Region: aws.String(awsRegion)})
 
+	result, err := client.Invoke(&lambda.InvokeInput{
+		FunctionName:   aws.String(functionName),
+		InvocationType: aws.String("RequestResponse"),
+		Payload:        payload,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (Client) InvokeAuthorizer(functionName string, awsRegion string, request events.APIGatewayCustomAuthorizerRequestTypeRequest) (*events.APIGatewayCustomAuthorizerResponse, error) {
 	payload, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := client.Invoke(&lambda.InvokeInput{
-		FunctionName:   aws.String(functionName),
-		InvocationType: aws.String("RequestResponse"),
-		LogType:        aws.String("Tail"),
-		Payload:        payload,
-	})
+	result, err := internatlClient.SimpleInvoke(functionName, awsRegion, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -50,22 +60,12 @@ func (Client) InvokeAuthorizer(functionName string, awsRegion string, request ev
 }
 
 func (Client) Invoke(functionName string, awsRegion string, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-	client := lambda.New(sess, &aws.Config{Region: aws.String(awsRegion)})
-
 	payload, err := json.Marshal(request)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := client.Invoke(&lambda.InvokeInput{
-		FunctionName:   aws.String(functionName),
-		InvocationType: aws.String("RequestResponse"),
-		LogType:        aws.String("Tail"),
-		Payload:        payload,
-	})
+	result, err := internatlClient.SimpleInvoke(functionName, awsRegion, payload)
 	if err != nil {
 		return nil, err
 	}

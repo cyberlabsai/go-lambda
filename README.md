@@ -2,7 +2,7 @@
 # go-lambda
 GoLambda is a lambda function "summoner". Could invoke two type: simple request or authorizer request.
 ## How it works
-Simple request
+#### Simple request
 ```
 package main
 
@@ -18,7 +18,7 @@ func main() {
 	userDataResponse, err := lbd.Invoke("gopher-function", "gopher-planet", dataRequest)
 }
 ```
-Authorizer
+#### Authorizer
 ```
 package main
 
@@ -32,5 +32,22 @@ func main() {
 		},
 	}
 	jwtAuthorizerResponse, _ := lbd.InvokeAuthorizer("gopher-function", "gopher-planet", authorizerRequest)
+}
+```
+#### SimpleInvoke
+```
+package main
+
+import lbd "github.com/cyberlabsai/go-lambda"
+
+func main() {
+	data := SomeStruct{
+		Ping: "pong",
+	}
+
+	dataByte, _ := json.Marshal(data)
+
+	res, err := client.SimpleInvoke("lambda-name", "lambda-region", dataByte)
+
 }
 ```
