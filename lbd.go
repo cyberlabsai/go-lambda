@@ -1,10 +1,8 @@
 package lbd
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
@@ -52,7 +50,7 @@ func (Client) InvokeAuthorizer(functionName string, awsRegion string, request ev
 	}
 
 	if resp.Context == nil {
-		err = errors.New("Unauthorized.")
+		err = errors.New("Unauthorized")
 		return nil, err
 	}
 
@@ -74,13 +72,6 @@ func (Client) Invoke(functionName string, awsRegion string, request events.APIGa
 
 	err = json.Unmarshal(result.Payload, &resp)
 	if err != nil {
-		return nil, err
-	}
-
-	// If the status code is NOT 200, the call failed
-	if resp.StatusCode != 200 {
-		log := base64.StdEncoding.EncodeToString([]byte(*result.LogResult))
-		err := errors.New("Error StatusCode: " + strconv.Itoa(resp.StatusCode) + log)
 		return nil, err
 	}
 
